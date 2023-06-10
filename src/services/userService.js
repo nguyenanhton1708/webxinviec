@@ -114,7 +114,12 @@ let createNewUser = (data) => {
           firstName: data.firstName,
           lastName: data.lastName,
           address: data.address,
+          phoneNumber: data.phoneNumber,
+          companyName: data.companyName,
+          gender: data.gender,
           roleId: data.roleId,
+          positionId: data.positionId,
+          image: data.image,
         });
         resolve({
           errCode: 0,
@@ -152,15 +157,28 @@ let DeleteUser = (userId) => {
 let updateUserData = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
+      if (!data.id || !data.gender || !data.roleId || !data.positionId) {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing required Parameters",
+        });
+      }
       let user = await db.User.findOne({
         where: { id: data.id },
         raw: false,
       });
       if (user) {
-        user.email = data.email;
         user.firstName = data.firstName;
         user.lastName = data.lastName;
         user.address = data.address;
+        user.phoneNumber = data.phoneNumber;
+        user.companyName = data.companyName;
+        user.gender = data.gender;
+        user.roleId = data.roleId;
+        user.positionId = data.positionId;
+        if (data.image) {
+          user.image = data.image;
+        }
         await user.save();
 
         resolve({
