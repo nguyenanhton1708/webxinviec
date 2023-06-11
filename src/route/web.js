@@ -19,6 +19,9 @@ let initWebRoutes = (app) => {
   router.delete("/api/Delete-user", userController.handleDeleteUser);
   router.get("/api/allcode", userController.getAllCode);
   router.get("/api/top-company-home", companyController.getTopCompanyHome);
+  router.get("/api/get-all-companys", companyController.getAllCompanys);
+  router.post("/api/save-infor-companys", companyController.postInforCompanys);
+  router.get("/api/get-detail-company", companyController.getDetailCompany);
 
   return app.use("/", router);
 };

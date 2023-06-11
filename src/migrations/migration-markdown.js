@@ -17,11 +17,11 @@ module.exports = {
         type: Sequelize.TEXT("long"),
       },
       description: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.TEXT("long"),
       },
       companyId: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.INTEGER,
       },
       createdAt: {
