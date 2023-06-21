@@ -30,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
         as: "companyData",
       });
       User.hasOne(models.Markdown, { foreignKey: "companyId" });
+      User.hasMany(models.Recruit, {
+        foreignKey: "companyId",
+      });
     }
   }
   User.init(

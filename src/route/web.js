@@ -22,6 +22,10 @@ let initWebRoutes = (app) => {
   router.get("/api/get-all-companys", companyController.getAllCompanys);
   router.post("/api/save-infor-companys", companyController.postInforCompanys);
   router.get("/api/get-detail-company", companyController.getDetailCompany);
+  router.get("/api/get-all-seeker", userController.handleGetAllSeeker);
+
+  router.post("/api/save-infor-post", companyController.saveInforPost);
+  router.get("/api/get-all-post", companyController.getAllPost);
 
   return app.use("/", router);
 };

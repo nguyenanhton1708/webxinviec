@@ -10,16 +10,6 @@ let getTopCompanyHome = (limitInput) => {
           exclude: ["password"],
         },
         include: [
-          // {
-          //   model: db.Allcode,
-          //   as: "positionData",
-          //   attributes: ["valueEn", "valueVi"],
-          // },
-          {
-            model: db.Allcode,
-            as: "genderData",
-            attributes: ["valueEn", "valueVi"],
-          },
           {
             model: db.Allcode,
             as: "roleData",
@@ -63,7 +53,7 @@ let getAllCompanys = () => {
   });
 };
 
-let saveDetailInforCompanys = (inputData) => {
+let saveDetailInforCompany = (inputData) => {
   return new Promise(async (resolve, reject) => {
     try {
       if (
@@ -76,12 +66,26 @@ let saveDetailInforCompanys = (inputData) => {
           errMessage: "Missing paremeter",
         });
       } else {
-        await db.Markdown.create({
-          contentHTML: inputData.contentHTML,
-          contentMarkdown: inputData.contentMarkdown,
-          description: inputData.description,
-          companyId: inputData.companyId,
-        });
+        if (inputData.action === "CREATE") {
+          await db.Markdown.create({
+            contentHTML: inputData.contentHTML,
+            contentMarkdown: inputData.contentMarkdown,
+            description: inputData.description,
+            companyId: inputData.companyId,
+          });
+        } else if (inputData.action === "EDIT") {
+          let companyMarkdown = await db.Markdown.findOne({
+            where: { companyId: inputData.companyId },
+            raw: false,
+          });
+          if (companyMarkdown) {
+            companyMarkdown.contentHTML = inputData.contentHTML;
+            companyMarkdown.contentMarkdown = inputData.contentMarkdown;
+            companyMarkdown.description = inputData.description;
+            await companyMarkdown.save();
+          }
+        }
+
         resolve({
           errCode: 0,
           errMessage: "Save infor company succeed",
@@ -120,7 +124,7 @@ let getDetailCompany = (inputId) => {
               attributes: ["valueEn", "valueVi"],
             },
           ],
-          raw: true,
+          raw: false,
           nest: true,
         });
         if (data && data.image) {
@@ -137,9 +141,96 @@ let getDetailCompany = (inputId) => {
     }
   });
 };
+
+let saveInforPost = (inputData) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (
+        !inputData.companyId ||
+        !inputData.contentPostHTML ||
+        !inputData.contentPostFINAL
+      ) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing paremeter",
+        });
+      } else {
+        if (inputData.action === "CREATE") {
+          await db.Recruit.create({
+            title: inputData.title,
+            contentPostHTML: inputData.contentPostHTML,
+            contentPostFINAL: inputData.contentPostFINAL,
+            companyId: inputData.companyId,
+          });
+        } else if (inputData.action === "EDIT") {
+          let postRecruit = await db.Recruit.findOne({
+            where: { companyId: inputData.companyId },
+            raw: false,
+          });
+          if (postRecruit) {
+            postRecruit.title = inputData.title;
+            postRecruit.contentPostHTML = inputData.contentPostHTML;
+            postRecruit.contentPostFINAL = inputData.contentPostFINAL;
+            await postRecruit.save();
+          }
+        }
+        resolve({
+          errCode: 0,
+          errMessage: "Save infor company succeed",
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+let getAllPost = (inputId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!inputId) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required parameter!",
+        });
+        console.log("check ", inputId);
+      } else {
+        let data = await db.User.findOne({
+          where: {
+            id: inputId,
+          },
+          attributes: {
+            exclude: ["password"],
+          },
+          include: [
+            {
+              model: db.Recruit,
+              attributes: ["title"],
+            },
+          ],
+          raw: false,
+          nest: true,
+        });
+        if (data && data.image) {
+          data.image = new Buffer(data.image, "base64").toString("binary");
+        }
+        if (!data) data = {};
+        resolve({
+          errCode: 0,
+          data: data,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   getTopCompanyHome: getTopCompanyHome,
   getAllCompanys: getAllCompanys,
-  saveDetailInforCompanys: saveDetailInforCompanys,
+  saveDetailInforCompany: saveDetailInforCompany,
   getDetailCompany: getDetailCompany,
+  getAllPost: getAllPost,
+  saveInforPost: saveInforPost,
 };

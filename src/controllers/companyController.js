@@ -30,7 +30,7 @@ let getAllCompanys = async (req, res) => {
 
 let postInforCompanys = async (req, res) => {
   try {
-    let response = await companyService.saveDetailInforCompanys(req.body);
+    let response = await companyService.saveDetailInforCompany(req.body);
     return res.status(200).json(response);
   } catch (e) {
     console.log(e);
@@ -44,8 +44,33 @@ let postInforCompanys = async (req, res) => {
 let getDetailCompany = async (req, res) => {
   try {
     let infor = await companyService.getDetailCompany(req.query.id);
-
     return res.status(200).json(infor);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: "Error from the server",
+    });
+  }
+};
+
+let saveInforPost = async (req, res) => {
+  try {
+    let response = await companyService.saveInforPost(req.body);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: "Error from the server",
+    });
+  }
+};
+
+let getAllPost = async (req, res) => {
+  try {
+    let postCruit = await companyService.getAllPost(req.query.id);
+    return res.status(200).json(postCruit);
   } catch (e) {
     console.log(e);
     return res.status(200).json({
@@ -59,4 +84,6 @@ module.exports = {
   getAllCompanys: getAllCompanys,
   postInforCompanys: postInforCompanys,
   getDetailCompany: getDetailCompany,
+  getAllPost: getAllPost,
+  saveInforPost: saveInforPost,
 };

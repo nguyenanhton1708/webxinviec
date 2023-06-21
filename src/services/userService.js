@@ -96,6 +96,33 @@ let getAllUsers = (userId) => {
   });
 };
 
+let getAllSeeker = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let users = "";
+      if (userId === "ALL") {
+        users = await db.User.findAll({
+          where: { roleId: "R3" },
+          attributes: {
+            exclude: ["password"],
+          },
+        });
+      }
+      if (userId && userId !== "ALL") {
+        users = await db.User.findOne({
+          where: { id: userId },
+          attributes: {
+            exclude: ["password"],
+          },
+        });
+      }
+      resolve(users);
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 let createNewUser = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -219,6 +246,7 @@ let getAllCodeService = (typeInput) => {
     }
   });
 };
+
 module.exports = {
   handleUserLogin: handleUserLogin,
   getAllUsers: getAllUsers,
@@ -226,4 +254,5 @@ module.exports = {
   DeleteUser: DeleteUser,
   updateUserData: updateUserData,
   getAllCodeService: getAllCodeService,
+  getAllSeeker: getAllSeeker,
 };

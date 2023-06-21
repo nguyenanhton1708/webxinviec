@@ -72,6 +72,25 @@ let getAllCode = async (req, res) => {
     });
   }
 };
+
+let handleGetAllSeeker = async (req, res) => {
+  let id = req.query.id;
+  if (!id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Missing required parameters",
+      users: [],
+    });
+  }
+
+  let users = await userService.getAllSeeker(id);
+  return res.status(200).json({
+    errCode: 0,
+    errMessage: "ok",
+    users,
+  });
+};
+
 module.exports = {
   handleLogin: handleLogin,
   handleGetAllUsers: handleGetAllUsers,
@@ -79,4 +98,5 @@ module.exports = {
   handleEditUser: handleEditUser,
   handleDeleteUser: handleDeleteUser,
   getAllCode: getAllCode,
+  handleGetAllSeeker: handleGetAllSeeker,
 };
